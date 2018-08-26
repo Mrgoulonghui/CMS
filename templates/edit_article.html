@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑我的博客</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form action="" method="post">
+            {% csrf_token %}
+                <div class="form-group">
+                    <label for="title">标题</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="标题" value="{{ edit_article_obj.title }}">
+                </div>
+                <div class="form-group">
+                    <label for="content">内容</label>
+                    <textarea class="form-control" name="content" id="content" cols="30" rows="20" >
+                        {{ edit_article_obj.articledetail.content }}
+                    </textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">文章分类</label>
+                    <select name="category" id="category" class="form-control">
+                        {% for category in category_list %}
+                            <option value="{{ category.id }}">{{ category.title}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">发布</button>
+                <span style="color: red">{{ err_msg }}</span>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/static/plugins/jquery-3.3.1.min.js"></script>
+<script charset="utf-8" src="/static/plugins/kindeditor-master/kindeditor-all.js"></script>
+<script charset="utf-8" src="/static/plugins/kindeditor-master/lang/zh-CN.js"></script>
+<script>
+        KindEditor.ready(function(K) {
+                window.editor = K.create('#content', {
+                    "uploadJson": "/blog/upload/",
+                    "extraFileUploadParams": {"csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val()}
+                });
+        });
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block show_article %}
+    <div class="article-list">
+        {% for article_obj in article_obj_list %}
+            <div class="media">
+                <div class="create-time">{{ article_obj.create_time|date:"Y年m月d日" }}</div>
+                <h4 class="media-heading article-title"><a
+                        href="/blog/{{ username }}/p/{{ article_obj.id }}">{{ article_obj.title }}</a></h4>
+                <div class="media-body">
+                    {{ article_obj.desc }}
+                </div>
+                <div class="article-footer blog-footer">
+                    <span>posted @{{ article_obj.create_time }}</span>
+                    <span>{{ username }}</span>
+                    <span>阅读({{ article_obj.read_count }})</span>
+                    <span>评论({{ article_obj.comment_count }})</span>
+                </div>
+            </div>
+        {% endfor %}
+        {{ page_html|safe }}
+    </div>
+{% endblock show_article %}
+

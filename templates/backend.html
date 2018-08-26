@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的博客后台</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container-fluid" style="margin-top: 70px">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">操作</div>
+              <div class="panel-body">
+                  <a href="/blog/add_article/">添加新文章</a>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                    <th>标题</th>
+                    <th>评论数</th>
+                    <th>点赞数</th>
+                    <th>操作</th>
+                    <th>操作</th>
+                </tr>
+              </thead>
+                <tbody>
+                    {% for article in article_list %}
+                        <tr>
+                        <td><a href="/blog/{{ article.user.username }}/p/{{ article.id }}/">{{ article.title }}</a></td>
+                        <td>{{ article.comment_count }}</td>
+                        <td>{{ article.up_count }}</td>
+                        <td><a href="/blog/del_article/{{ article.id }}" class="btn btn-warning">删除</a></td>
+                        <td><a href="/blog/edit_article/{{ article.id }}" class="btn btn-info">编辑</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

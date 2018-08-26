@@ -1,0 +1,197 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+ul{
+    list-style: none;
+}
+a{
+    text-underline: none;
+}
+.clearfix:after{
+			content: ".";
+			display: block;
+			clear: both;
+			visibility: hidden;
+			height: 0;
+		}
+.top{
+    padding-top: 70px;
+}
+
+#refresh{
+    position: absolute;
+    right: -13px;
+    top: 3px;
+}
+#refresh:hover{
+    color: coral;
+}
+/* 首页样式区*/
+hr{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.media h3{
+    margin: 0 0 5px 0;
+}
+.media-title{
+    color: #105cb6;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+.media-title:hover{
+    color: red;
+}
+.media-avatar{
+    width: 52px;
+    height: 52px;
+}
+.article-footer {
+    margin-top: 5px;
+}
+.article-footer span{
+    margin-right: 10px;
+}
+/* 分页右浮*/
+.my-page{
+    float: right;
+}
+
+/*个人博客样式*/
+h1.blog-title{
+    color: #0378bb;
+    font-family: 'PingFang SC','Helvetica Neue','Helvetica','Arial','Microsoft Yahei',sans-serif;
+    text-shadow: 3px 3px 3px deepskyblue;
+}
+h4.article-title{
+    cursor: pointer;
+    color: #0378bb;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0 100px 10px 20px;
+    border-bottom: 1px solid #3d97cb;
+    line-height: 1.5em;
+    clear: both;
+    border-left: 12px solid #3d97cb;
+}
+h4.article-title:hover{
+    margin-left: 100px;
+    color: #f60;
+    text-decoration: none;
+}
+.create-time{
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.panel-title a{
+    color: white;
+    padding: 0 10px;
+}
+.panel-title li{
+    float: left;
+    padding-right: 20px;
+}
+.blog-notice{
+    background-color: #cbdcec;
+}
+.blog-footer{
+    float: right;
+}
+.blog-footer span{
+    margin-right: 1px;
+}
+
+/*博客的右边栏*/
+.blog-right h3{
+    text-align: left;
+    padding: 5px 10px;
+    background: #d9ebf5;
+    border-bottom: none;
+    border: 1px solid #fff;
+    font-weight: bold;
+    line-height: 1.5em;
+    font-size: 110%;
+    margin-top: 15px;
+    margin-bottom: 10px;
+
+}
+
+
+/*点赞，反对样式 */
+.clear{
+    clear: both;
+}
+#div_digg {
+    float: right;
+    margin-bottom: 10px;
+    margin-right: 30px;
+    font-size: 12px;
+    width: 125px;
+    text-align: center;
+    margin-top: 10px
+}
+
+.diggit {
+    float: left;
+    width: 46px;
+    height: 52px;
+    background: url('/static/img/upup.gif') no-repeat;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 2px;
+    padding-top: 5px
+}
+
+.diggnum {
+    font-size: 14px;
+    color: #075db3;
+}
+
+.buryit {
+    float: right;
+    margin-left: 20px;
+    width: 46px;
+    height: 52px;
+    background: url('/static/img/downdown.gif') no-repeat;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 2px;
+    padding-top: 5px
+}
+
+.burynum {
+    font-size: 14px;
+    color: #075db3;
+}
+
+.diggword {
+    margin-top: 5px;
+    margin-left: 0;
+    font-size: 12px;
+    color: red;
+}
+.neirong{
+    color: #C6E746;
+}
+/*评论样式*/
+.comment-bar{
+    font-weight: bold;
+    border-bottom: 1px solid #333;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+.comment-list{
+    margin-bottom: 15px;
+}
+p.comment-content{
+    padding-top: 8px;
+}
+.replay{
+    cursor: pointer;
+    text-decoration: underline;
+}
+p.neirong{
+    margin: 5px 0 0 0;
+}

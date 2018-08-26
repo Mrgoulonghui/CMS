@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bbs_css.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+{% csrf_token %}
+<div class="container top">
+    <div class="row">
+        <form class="form-horizontal" novalidate>
+            <div class="form-group">
+                <label for="{{ form_obj.username.id_for_label }}" class="col-sm-2 col-sm-offset-2 control-label">{{ form_obj.username.label }}</label>
+                <div class="col-sm-4">
+                    {{ form_obj.username }}
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form_obj.password.id_for_label }}" class="col-sm-2 col-sm-offset-2 control-label">{{ form_obj.password.label }}</label>
+                <div class="col-sm-4">
+                    {{ form_obj.password }}
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form_obj.re_password.id_for_label }}" class="col-sm-2 col-sm-offset-2 control-label">{{ form_obj.re_password.label }}</label>
+                <div class="col-sm-4">
+                    {{ form_obj.re_password }}
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form_obj.phone.id_for_label }}" class="col-sm-2 col-sm-offset-2 control-label">{{ form_obj.phone.label }}</label>
+                <div class="col-sm-4">
+                    {{ form_obj.phone }}
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form_obj.email.id_for_label }}" class="col-sm-2 col-sm-offset-2 control-label">{{ form_obj.email.label }}</label>
+                <div class="col-sm-4">
+                    {{ form_obj.email }}
+                    <span class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="avatar" class="col-sm-2 col-sm-offset-3 control-label">头像
+                    <img id="avatar-img" src="/static/img/default.png" alt="" style="height: 80px;width: 80px;margin-left: 20px">
+                </label>
+                <div class="col-sm-4">
+                    <input type="file" accept="image/*" id="avatar" style="display: none;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="v-code" class="col-sm-2 col-sm-offset-2 control-label">验证码</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" id="v-code" placeholder="验证码" style="display: inline-block">
+                    <span id="error-msg" style="color: red"></span>
+                </div>
+                <div class="col-sm-2">
+                    <img src="/v_code/" id="random_img" alt="" style="height: 34px; width: 170px;">
+                    <i class="fa fa-refresh fa-2x" id="refresh" aria-hidden="true" style="cursor: pointer"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-4">
+                    <button type="button" class="btn btn-success btn-lg btn-block" id="reg_btn">注册</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<script src="/static/plugins/jquery-3.3.1.min.js"></script>
+<script>
+    $(function () {
+
+        /*  不上传头像的写法
+        $("#reg_btn").click(function () {
+            let username = $("#id_username").val();
+            let pwd = $("#id_password").val();
+            let re_pwd = $("#id_re_password").val();
+            let phone = $("#id_phone").val();
+            let email = $("#id_email").val();
+            let csrfToken = $("[name='csrfmiddlewaretoken']").val();
+            let v_code = $("#v-code").val();
+            $.ajax({
+                url: "/register/",
+                type: "post",
+                data:{
+                    username: username,
+                    password: pwd,
+                    re_password: re_pwd,
+                    phone: phone,
+                    email: email,
+                    v_code:v_code,
+                    'csrfmiddlewaretoken': csrfToken
+                },
+                success: function (res) {
+                    if(res.code === 0){
+                        location.href = res.msg
+                    }else if(res.code === 1){
+                        console.log(res.msg);
+                        // 遍历取出所有的错误提示信息，在页面上展示出来
+                        $.each(res.msg, function (k, v) {
+                            $("#id_"+k).next().text(v[0]).parent().addClass("has-error");
+                        })
+                    }else{
+                        // 验证码正确
+                        $("#error-msg").text(res.msg)
+                    }
+                }
+            })
+        });
+        */
+
+        // 加上上传头像
+        $("#reg_btn").click(function () {
+            // 创建一个FormData对象
+            let obj = new FormData();
+            // 将要上传的文件数据添加到对象中
+            obj.append("avatar", $("#avatar")[0].files[0]);
+
+            // 也可添加其他内容
+            obj.append("username", $("#id_username").val());
+            obj.append("password", $("#id_password").val());
+            obj.append("re_password", $("#id_re_password").val());
+            obj.append("phone", $("#id_phone").val());
+            obj.append("email", $("#id_email").val());
+            obj.append("v_code", $("#v-code").val());
+            obj.append("csrfmiddlewaretoken", $("[name='csrfmiddlewaretoken']").val());
+
+
+            $.ajax({
+                url: "/register/",
+                type: "post",
+                data:obj,
+                processData: false, // 不让jQuery处理我的obj
+                contentType: false, // 不让jQuery设置请求的内容类型
+                success: function (res) {
+                    if(res.code === 0){
+                        // 注册成功跳转登陆页面
+                        location.href = res.msg
+                    }else if(res.code === 1){
+                        {#console.log(res.msg);#}
+                        // 遍历取出所有的错误提示信息，在页面上展示出来
+                        $.each(res.msg, function (k, v) {
+                            $("#id_"+k).next().text(v[0]).parent().addClass("has-error");
+                        })
+                    }else{
+                        // res.code === 2
+                        // 验证码错误
+                        $("#error-msg").text(res.msg)
+                    }
+                }
+            })
+        });
+
+
+
+        $("#refresh").click(function () {
+            let img_src = document.getElementById("random_img");
+            // 方式1
+            // img_src.src += "?"; 这个方式每次都加url，不好看
+
+            // 方式2
+           // 使用正则验证，url,如果以？结尾,就切片去掉，没有？，就加一个？，达到每次url不同的目的，去刷新v_code
+            // 但是记得后端加django装饰器，保证每次都重新请求，不使用缓存
+            let url = img_src.src;
+            if (/\?$/.test(url)){
+                img_src.src = url.slice(0, -1);
+            }else{
+                img_src.src = url + "?";
+            }
+        });
+
+        // 每一个input标签获取焦点的时候，把自己下面的span标签内容清空，把父标签的has-error样式移除
+        $("input.form-control").focus(function () {
+            $(this).next("span").text("").parent().removeClass("has-error");
+        });
+
+        // 前端页面实现头像预览
+        // 当用户选中文件之后，也就是头像的input标签有值时触发
+        $("#avatar").change(function () {
+            // 找到用户选中的那个文件
+            let file = this.files[0];
+            // 生成一个读文件的对象
+            let fr = new FileReader();
+            // 从文件中读取头像文件数据
+            fr.readAsDataURL(file);
+            // 等到读完之后,加载需要时间
+            fr.onload = function () {
+                // 将头像img标签的src属性更换成我选中的那个文件
+                $("#avatar-img").attr("src", fr.result)
+            }
+        })
+
+    });
+</script>
+
+</body>
+</html>

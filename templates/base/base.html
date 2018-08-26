@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bbs_css.css">
+
+    <!-- 个人自定制博客主题，导入放在默认博客主题下面，可以覆盖默认博客主题-->
+    <link rel="stylesheet" href="/static/css/{{ blog_obj.theme }}">
+
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="blog-title" style="margin-bottom: 50px"><a href="/blog/{{ username }}">{{blog_obj.title}}</a></h1>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title clearfix">
+                <ul>
+                    <li><a href="/index/">博客园</a></li>
+                    <li><a href="/blog/{{ username }}">首页</a></li>
+                    <li><a href="">新随笔</a></li>
+                    <li><a href="">联系</a></li>
+                    <li><a href="">订阅</a></li>
+                    <li><a href="/blog/backend/">管理</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-9">
+                    {% block show_article %}
+                    {% endblock show_article%}
+                </div>
+                <div class="col-sm-3">
+                    {% load my_tags %}
+                    {% side_bar username %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/plugins/jquery-3.3.1.min.js"></script>
+<script src="/static/plugins/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+{% block UpDown-js %}
+
+{% endblock UpDown-js %}
+</body>
+</html>

@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block show_article %}
+    <div class="article-detail">
+        <h4 class="media-heading article-title"><a
+                href="/blog/{{ username }}/p/{{ article_obj.id }}">{{ article_obj.title }}</a></h4>
+        <div class="article-content">{{ article_obj.articledetail.content|safe }}</div>
+    </div>
+    {% csrf_token %}
+    <hr>
+    <!-- 点赞 开始-->
+    <div class="clearfix">
+        <div id="div_digg">
+            <!-- 点赞 -->
+            <div class="diggit digg">
+                <span class="diggnum" id="digg_count">{{ article_obj.up_count }}</span>
+            </div>
+            <!-- 反对 -->
+            <div class="buryit digg">
+                <span class="burynum" id="bury_count">{{ article_obj.down_count }}</span>
+            </div>
+            <div class="clear"></div>
+            <!-- 提示信息 -->
+            <div class="diggword clearfix" id="digg_tips"></div>
+            <a href="/login/?next={{ request.path_info }}" style="display: none" id="go-login">去登陆</a>
+        </div>
+    </div>
+    <!-- 点赞 结束-->
+
+    <!-- 展示评论开始 -->
+    <div class="comment-bar">
+        评论列表
+    </div>
+    <div class="list-group all-comment">
+
+        <!--  页面一刷新，通过发送ajax请求，获取该篇文章的所有评论，使用js将所有评论添加到这里，渲染页面 -->
+
+    </div>
+
+    <div class="pull-right">
+        <a href="#">刷新评论</a>
+        <a href="/blog/{{ username }}/p/{{ article_obj.id }}">刷新页面</a>
+        <a href="#top">返回顶部</a>
+    </div>
+    <!-- 展示评论结束 -->
+
+    <!-- 发表评论开始 -->
+    <div class="comment-container">
+        <div class="comment-bar">发表评论</div>
+        <div>
+            昵称：
+            <input type="text" value="{{ request.user.username }}" disabled>
+        </div>
+        <div>
+            <p class="neirong">评论内容：</p>
+            <textarea id="new-comment" cols="60" rows="10"></textarea>
+        </div>
+        <div>
+            <button class="btn btn-success submit-comment">提交评论</button>
+        </div>
+    </div>
+    <!-- 发表评论结束 -->
+
+{% endblock show_article %}
+
+{% block UpDown-js %}
+    <script type="text/javascript">
+        $(function () {
+            $(document).ready(
+                $.ajax({
+                    url: "/comment_tree/{{ article_obj.id }}",
+                    type: "get",
+                    success: function (res) {
+                        $.each(res.data, function (k, v) {
+                            var commentHtml =
+                                `<div class="list-group-item comment-list" id="c${v.id}">
+                                    <div class="list-group-item-heading">
+                                        <span>${v.create_time}</span>
+                                        <span><a href="/blog/${ v.username }">${ v.username }</a></span>
+                                        <span class="pull-right replay">回复</span>
+                                    </div>
+                                    <p class="list-group-item-text comment-content">${ v.content }</p>
+                                    <div class="clearfix">
+                                        <div class="comment-up-down pull-right">
+                                            <a href="">支持(0)</a>
+                                            <a href="">反对(0)</a>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            if (v.pid) {
+                                // 如果后端传过来的值（字典）中的parent_id不为空，说明是子评论；
+                                // 然后根据我们自己定义的id属性，拿到该子评论的父评论的标签，在其下面添加 子评论 标签
+                                {#console.log("#c" + v.pid, typeof ("#c" + v.pid));#}
+                                console.log("-->", v);
+                                $("#c" + v.pid).append(commentHtml);
+                            } else {
+                                // 如果后端传过来的值（字典）中的parent_id为空，说明是父评论，直接添加；
+                                $(".all-comment").append(commentHtml)
+                            }
+                        })
+                    }
+                })
+            );
+            $(".digg").click(function () {
+                if (!'{{request.user.username}}') {
+                    $("#digg_tips").text("没有登陆，不能点赞或者反对");
+                    $("#go-login").css("display", "block");
+                    {#location.href = "/login/?next={{ request.path_info }}"#}
+                }
+                let userId = '{{ request.user.id }}';
+                let articleId = '{{ article_obj.id }}';
+                let isUp = $(this).hasClass("diggit");
+                $.ajax({
+                    url: "/UpDown/",
+                    type: "post",
+                    data: {
+                        csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+                        userId: userId,
+                        articleId: articleId,
+                        isUp: isUp
+                    },
+                    success: function (res) {
+                        if (res.code !== 0) {
+                            // 只需要把错误提示显示出来就可以
+                            $("#digg_tips").text(res.msg);
+                        } else {
+                            // 1. 先把点赞数或反对数更新一下
+                            if (isUp) {
+                                // 表示更新点赞数
+                                let $digg_count = $("#digg_count");
+                                // 注意拿到的是内容是字符串，不能直接加+1，需要先转数字
+                                {#console.log($digg_count.text(), typeof $digg_count.text());#}
+                                // 方式1
+                                $digg_count.text(+$digg_count.text() + 1);
+                                // 方式2
+                                {#$digg_count.text(parseInt($digg_count.text())+1)#}
+                            } else {
+                                // 表示更新反对数
+                                let $bury_count = $("#bury_count");
+                                $bury_count.text(+$bury_count.text() + 1)
+                            }
+                            // 2. 再显示提示
+                            $("#digg_tips").text(res.msg);
+                        }
+                    }
+                })
+            });
+
+            $(".submit-comment").click(function () {
+                var user_id = '{{ request.user.id }}';
+                var article_id = '{{ article_obj.id }}';
+                var content = $("#new-comment").val();
+                // 这里的父id是从下方自己存储进去的，在这里可以拿出来使用
+                var parent_id = $(this).data("pid") || "";
+                // 也有可能没点回复，直接添加的父评论，所以这里需要写上 || (或者""),防止报错
+                if (parent_id) {
+                    // 如果父id存在，需要把评论内容中的 @xx去掉
+                    // 使用”\n"的索引，切片拿到真正的评论
+                    content = content.slice(content.indexOf("\n") + 1,);
+                }
+                // var content = (parent_id)? content.slice(content.indexOf("\n") + 1,):content;  三元运算符的写法
+                $.ajax({
+                    url: '/comment/',
+                    type: 'post',
+                    data: {
+                        user_id: user_id,
+                        article_id: article_id,
+                        content: content,
+                        csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                        parent_id: parent_id
+                    },
+                    success: function (res) {
+                        console.log(res);
+                        if (res.code === 0) {
+                            var num = $(".all-comment>div").length + 1;
+                            var commentHtml = `
+                                <div class="list-group-item comment-list" my_id=${ res.data.parent_id}>
+                                    <div class="list-group-item-heading">
+                                        <span>#${num}楼</span>
+                                        <span>${res.data.create_time}</span>
+                                        <span><a href="/blog/${ res.data.username }">${ res.data.username }</a></span>
+                                        <span class="pull-right replay">回复</span>
+                                    </div>
+                                    <p class="list-group-item-text comment-content">${ res.data.new_content }</p>
+                                    <div class="clearfix">
+                                        <div class="comment-up-down pull-right">
+                                            <a href="">支持(0)</a>
+                                            <a href="">反对(0)</a>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            $(".all-comment").append(commentHtml);
+                            // 清空textarea内容
+                            $("#new-comment").val("");
+                            // 不要忘记使用完之后 删除，要不然每次评论都能拿到父id
+                            $(".submit-comment").removeData("parent_id")
+                        }
+                    }
+                })
+
+            });
+            // 给回复按钮绑定事件
+            {#$(".replay").click(function () {#} // 这种不可以，新添加的评论没有点击事件
+            // 需要使用事件绑定
+            $(".all-comment").on("click", ".replay", function () {
+                // 1. 光标聚焦到评论框
+                // 2. 添加一个@xxx的提示
+                var replayName = $(this).prev().text();
+                {#console.log(replayName);#}
+                $("#new-comment").focus().val("@" + replayName + "\n");
+                // 这里需要注意的是：
+                // 我们在每一条评论上添加了自定义属性，方便我们拿到父评论id，
+                // 但是我们用这个父id是要发送的后端去，后端存在数据库中，
+                // 而和后端交互的时候是在发表评论的提交按钮（ $(".submit-comment")）是触发的，
+                // 但是在提交按钮中，是没办法拿到是点击的那个 回复 事件，也就没法拿到父id；
+                // 所以在js中有个方法，可以将数据保存在某个jquery对象中，如下data方法
+                var pID = $(this).parent().parent().attr("my_id");
+                $(".submit-comment").data("pid", pID);
+            })
+        });
+
+    </script>
+{% endblock %}

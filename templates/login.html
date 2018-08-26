@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bbs_css.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+{% csrf_token %}
+<div class="container login">
+    <div class="row">
+        <form class="form-horizontal">
+            <div>
+                <h2 style="color: #904;padding-left: 405px; padding-bottom: 20px">登录博客园 - 代码改变世界</h2>
+            </div>
+            <div class="form-group">
+                <label for="inputUsername" class="col-sm-2 col-sm-offset-2 control-label">用户名</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="inputUsername" placeholder="用户名">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword" class="col-sm-2 col-sm-offset-2 control-label">密码</label>
+                <div class="col-sm-4">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="密码">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="v-code" class="col-sm-2 col-sm-offset-2 control-label">验证码</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" id="v-code" placeholder="验证码" style="display: inline-block">
+                </div>
+                <div class="col-sm-2">
+                    <img src="/v_code/" id="random_img" alt="" style="height: 34px; width: 170px;">
+                    <i class="fa fa-refresh fa-2x" id="refresh" aria-hidden="true" style="cursor: pointer"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-4">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> 记住密码
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <p id="err_msg" class="col-sm-offset-4 col-sm-4" style="color: red"></p>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-4">
+                    <button type="button" class="btn btn-success btn-lg btn-block" id="btn">登陆</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/static/plugins/jquery-3.3.1.min.js"></script>
+<script>
+    $(function () {
+        $("#btn").click(function () {
+            let username = $("#inputUsername").val();
+            let pwd = $("#inputPassword").val();
+            let csrfToken = $("[name='csrfmiddlewaretoken']").val();
+            let v_code = $("#v-code").val();
+            $.ajax({
+                {#url: "/login/",#}
+                {#url: "/login/?next={{ request.get_full_path }}",#} <!-- 错误写法 -->
+                url: "{{ request.get_full_path }}",
+                <!-- 为了其他页面的跳转登陆，所以这样写，注意上面的写法错误，也不能写request.path_info,因为拿不到url上的参数-->
+                type: "post",
+                data: {
+                    "username": username,
+                    "pwd": pwd,
+                    csrfmiddlewaretoken: csrfToken,
+                    v_code: v_code
+                },
+                success:function (res) {
+                    console.log(res);
+                    if(res.code !== 0){
+                        $("#err_msg").text(res.msg)
+                    }else {
+                        location.href = res.msg
+                    }
+                }
+            })
+        });
+
+        $("input").focus(function () {
+            $("#err_msg").text("")
+        });
+
+        $("#refresh").click(function () {
+            let img_src = document.getElementById("random_img");
+            // 方式1
+            // img_src.src += "?"; 这个方式每次都加url，不好看
+
+            // 方式2
+           // 使用正则验证，url,如果以？结尾,就切片去掉，没有？，就加一个？，达到每次url不同的目的，去刷新v_code
+            // 但是记得后端加django装饰器，保证每次都重新请求，不使用缓存
+            let url = img_src.src;
+            if (/\?$/.test(url)){
+                img_src.src = url.slice(0, -1);
+            }else{
+                img_src.src = url + "?";
+            }
+        })
+    })
+</script>
+</body>
+</html>

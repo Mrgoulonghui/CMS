@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bbs_css.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<!--导航栏开始-->
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Brand</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">Link</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/login/"><button class="btn btn-success btn-sm">登陆</button></a>
+                </li>
+                <li>
+                    <a href="/register/"><button class="btn btn-info btn-sm">注册</button></a>
+                </li>
+{#                <li><a href="/blog/">{{ request.user.username }}</a></li>#}
+{#                <li>#}
+{#                    <img src="/media/{{ request.user.avatar }}" alt="" style="height: 50px;width: 50px;border-radius: 50%">#}
+{#                </li>#}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/logout/">注销</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<!--导航栏结束-->
+
+<!--主题内容开始-->
+<div class="container-fluid">
+    <div class="row">
+        <!-- 左侧广告栏开始 -->
+        <div class="col-md-2">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Panel title</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+        <!-- 左侧广告栏结束 -->
+
+        <!-- 中间内容开始 -->
+        <div class="col-md-8">
+            <div class="article-list">
+                {% for article in article_list %}
+                    <div class="article">
+                        <div class="media">
+                            <h3><a class="media-heading media-title" href="#">{{ article.title }}</a></h3>
+                            <div class="media-left">
+                                <a href="/blog/{{ article.user.username }}">
+                                    <img class="media-object media-avatar" src="/media/{{ article.user.avatar }}"
+                                         alt="...">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <div class="article-desc">
+                                    {{ article.desc }}&nbsp;...
+                                </div>
+                            </div>
+                            <div class="article-footer">
+                                <span><a href="/blog/{{ article.user.username }}">{{ article.user.username }}</a></span>
+                                <span>&nbsp;发布于&nbsp;{{ article.create_time|date:"Y-m-d H:i:s" }}</span>
+                                <span>
+                                    <!--
+{#                                    {{ article.comment_set.all.count }} 这样是跨表查询，不好，可以在文章表里自定义字段，做一个事务性操作，不跨表查询#}
+                                    <a href="">
+{#                                        <i class="fa fa-commenting-o fa-lg" aria-hidden="true"></i>评论({{ article.comment_set.all.count }})#}
+                                    </a>
+                                    -->
+                                    <a href="">
+                                        <i class="fa fa-commenting-o fa-lg" aria-hidden="true"></i>评论({{ article.comment_count }})
+                                    </a>
+                                </span>
+                                <span>
+                                     <!--
+{#                                     {{ article.articleupdown_set.all.count }} 这样是跨表查询，不好，可以在文章表里自定义字段，做一个事务性操作，不跨表查询}#}
+                                    <a href="">
+{#                                        <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>点赞({{ article.articleupdown_set.all.count }})#}
+                                    </a>
+                                    -->
+                                    <a href="">
+                                        <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>点赞({{ article.up_count }})
+                                    </a>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <hr>
+                {% endfor %}
+            <div class="my-page">
+               {{ page_html|safe }}
+            </div>
+
+            </div>
+        </div>
+        <!-- 中间内容结束 -->
+
+        <!-- 右侧广告栏开始 -->
+        <div class="col-md-2">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Panel title</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+        <!-- 右侧广告栏结束 -->
+    </div>
+</div>
+<!--主题内容结束-->
+
+<script src="/static/plugins/jquery-3.3.1.min.js"></script>
+<script src="/static/plugins/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>

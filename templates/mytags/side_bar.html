@@ -1,0 +1,75 @@
+<div class="blog-right">
+    <div class="blog-notice">
+        <h3>公告</h3>
+        <ul>
+            <li>{{ username }}的博客园</li>
+        </ul>
+    </div>
+    <div class="category">
+        <h3 class="category">随笔分类</h3>
+        <ul>
+            {% for category_obj in category_obj_list %}
+                <li>
+                    <a href="/blog/{{ username }}/category/{{ category_obj.title }}">{{ category_obj.title }}({{ category_obj.article_set.all.count }})</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="tag">
+        <h3 class="tag">我的标签</h3>
+        <ul>
+            {% for tag_obj in tag_obj_list %}
+                <li>
+                    <a href="/blog/{{ username }}/tags/{{ tag_obj.title }}">{{ tag_obj.title }}({{ tag_obj.article_set.all.count }})</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="time-sort">
+        <h3 class="time-sort">随笔档案</h3>
+        <ul>
+            {% for archive in archive_list %}
+                <li>
+                    <a href="/blog/{{ username }}/archive/{{ archive.y_m }}">{{ archive.y_m }}({{ archive.num }})</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+{#    <div class="comment">#}
+{#        <h3 class="comment">最新评论</h3>#}
+{#        <div id="myTime">#}
+{#            <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"#}
+{#                    codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"#}
+{#                    width="160" height="70" id="honehoneclock" align="middle">#}
+{#                <param name="allowScriptAccess" value="always">#}
+{#                <param name="movie" value="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_wh.swf">#}
+{#                <param name="quality" value="high">#}
+{#                <param name="bgcolor" value="#ffffff">#}
+{#                <param name="wmode" value="transparent">#}
+{#                <embed wmode="transparent"#}
+{#                       src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock_wh.swf" quality="high"#}
+{#                       bgcolor="#ffffff" width="160" height="70" name="honehoneclock" align="middle"#}
+{#                       allowscriptaccess="always" type="application/x-shockwave-flash"#}
+{#                       pluginspage="http://www.macromedia.com/go/getflashplayer">#}
+{#            </object>#}
+{#        </div>#}
+{#        <div>#}
+{#            <object type="application/x-shockwave-flash" style="outline:none;"#}
+{#                    data="http://cdn.abowman.com/widgets/hamster/hamster.swf?up_bodyColor=f0e9cc&up_feetColor=D4C898&up_eyeColor=000567&up_wheelSpokeColor=DEDEDE&up_wheelColor=FFFFFF&up_waterColor=E0EFFF&up_earColor=b0c4de&up_wheelOuterColor=FF4D4D&up_snoutColor=F7F4E9&up_bgColor=F0E4E4&up_foodColor=cba920&up_wheelCenterColor=E4EB2F&up_tailColor=E6DEBE&"#}
+{#                    width="180" height="150">#}
+{#                <param name="movie"#}
+{#                       value="http://cdn.abowman.com/widgets/hamster/hamster.swf?up_bodyColor=f0e9cc&up_feetColor=D4C898&up_eyeColor=000567&up_wheelSpokeColor=DEDEDE&up_wheelColor=FFFFFF&up_waterColor=E0EFFF&up_earColor=b0c4de&up_wheelOuterColor=FF4D4D&up_snoutColor=F7F4E9&up_bgColor=F0E4E4&up_foodColor=cba920&up_wheelCenterColor=E4EB2E&up_tailColor=E6DEBE&">#}
+{#                <param name="AllowScriptAccess" value="always">#}
+{#                <param name="wmode" value="opaque">#}
+{#            </object>#}
+{#        </div>#}
+{##}
+        {#                        <ul>#}
+        {#                            {% for article_obj in article_obj_list %}#}
+        {#                                <li>{{ article_obj.category.title }}</li>#}
+        {#                            {% endfor %}#}
+        {#                        </ul>#}
+{#    </div>#}
+</div>
