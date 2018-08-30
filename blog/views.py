@@ -271,8 +271,7 @@ def home(request, username, *args):
     # # 最后返回一个values(特殊的QuerySet
     # # <QuerySet [{'y_m': '2015-06', 'num': 1}, {'y_m': '2017-09', 'num': 2}, {'y_m': '2018-05', 'num': 2}]>)
     # # 返回到模板中渲染，模板使用点的方式渲染
-    page_data = ""
-    page_html = ""
+
     if args:
         # 如果有参数，说明是走的具体分类的标签，对上面查出来的所有的文章，继续按照url传过来的参数筛选，
         if args[0] == "category":
@@ -286,6 +285,14 @@ def home(request, username, *args):
                 article_obj_list = article_obj_list.filter(create_time__year=year, create_time__month=month)
             except Exception:
                 article_obj_list = []
+        return render(request, "home.html", {
+            "username": username,
+            "blog_obj": blog_obj,
+            "article_obj_list": article_obj_list,
+            # "category_obj_list": category_obj_list,  # 使用inclusion_tag代替
+            # "tag_obj_list": tag_obj_list,
+            # "archive_list": archive_list,
+        })
     else:
         page_num = request.GET.get("page", 1)
         all_data = article_obj_list.count()
@@ -293,16 +300,15 @@ def home(request, username, *args):
         page_data = article_obj_list[page_obj.start:page_obj.end]
         page_html = page_obj.ret_html()
 
-    return render(request, "home.html", {
-        "username": username,
-        "blog_obj": blog_obj,
-        "article_obj_list": article_obj_list,
-        # "category_obj_list": category_obj_list,  # 使用inclusion_tag代替
-        # "tag_obj_list": tag_obj_list,
-        # "archive_list": archive_list,
-        "page_data": page_data,
-        "page_html": page_html
-    })
+        return render(request, "home.html", {
+            "username": username,
+            "blog_obj": blog_obj,
+            "article_obj_list": page_data,
+            # "category_obj_list": category_obj_list,  # 使用inclusion_tag代替
+            # "tag_obj_list": tag_obj_list,
+            # "archive_list": archive_list,
+            "page_html": page_html
+        })
 
 
 def article(request, username, pk):
