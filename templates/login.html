@@ -66,6 +66,7 @@
             $.ajax({
                 {#url: "/login/",#}
                 {#url: "/login/?next={{ request.get_full_path }}",#} <!-- 错误写法 -->
+
                 url: "{{ request.get_full_path }}",
                 <!-- 为了其他页面的跳转登陆，所以这样写，注意上面的写法错误，也不能写request.path_info,因为拿不到url上的参数-->
                 type: "post",
