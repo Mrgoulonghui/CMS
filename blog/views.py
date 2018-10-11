@@ -16,6 +16,7 @@ from io import BytesIO
 
 # 滑动验证码的模块
 from utils.geetest import GeetestLib
+
 # 导入form组件的注册类
 from blog.my_forms import RegisterForm
 from blog import models
